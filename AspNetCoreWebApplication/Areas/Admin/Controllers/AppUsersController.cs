@@ -17,7 +17,7 @@ namespace AspNetCoreWebApplication.Areas.Admin.Controllers
         }
 
         // GET: AppUsersController
-        public async Task<ActionResult> IndexAsync() //async ifadesi asenkron çalışacağını ifade eder
+        public async Task<ActionResult> Index() //async ifadesi asenkron çalışacağını ifade eder
         {
             return View(await _databaseContext.AppUsers.ToListAsync());
         }
@@ -29,65 +29,77 @@ namespace AspNetCoreWebApplication.Areas.Admin.Controllers
         }
 
         // GET: AppUsersController/Create
-        public ActionResult Create()
+        public ActionResult Create() // Get metotları sayfa ilk açıldığında çalışan metotlardır
         {
-            return View();
+            return View(); // Eğer sayfa il açıldığında view a bir veri göndermemiz gerekirse bu blokta göndermeliyiz.
         }
 
         // POST: AppUsersController/Create
-        [HttpPost]
+        [HttpPost] //bu metoda istek gelir.
         [ValidateAntiForgeryToken]
-        public ActionResult Create(AppUser appUser)
+        public async Task<ActionResult> CreateAsync(AppUser appUser) //Parametrelerin içi dolduruluyor.
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) //burada durum kontrol ediliyor, boş geçilen alan yoksa aşaıdaki bloklardan devam eder.
             {
                 try
                 {
-                    return RedirectToAction(nameof(IndexAsync));
+                    //appuser den gelen bilgiyi burada veri tabanına gönderme ve kaydetme işelemi yapacağız.
+                    await _databaseContext.AppUsers.AddAsync(appUser); // gelen appUser nesnesini _databaseContext e eklemek üzere işeretliyor. (artık appUser nesnesi veritabanına gönderilir.)
+                    await _databaseContext.SaveChangesAsync(); //eklenen nesnenin kaydedilmesi için de bu metodu kullanıyoruz. (gönderilen nesne üzerinden değişlik uygulanır,kaydeliri)
+                    return RedirectToAction(nameof(Index));
                 }
                 catch
                 {
                     ModelState.AddModelError(" ", "Hata Oluştu");
                 }
             }
-            return View();
+            return View(appUser);
         }
 
         // GET: AppUsersController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            // Ampülden make method async yi seçiyoruz
+            return View(await _databaseContext.AppUsers.FindAsync(id)); // FindAsync metodu kendisine verdiğimiz id ye sahip kaydı veritabanından bulup bize getirir
         }
 
         // POST: AppUsersController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(AppUser appUser )
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(IndexAsync));
+                try
+                {
+                    _databaseContext.Entry(appUser).State = EntityState.Modified;
+                    await _databaseContext.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    ModelState.AddModelError(" ", "Hata Oluştu");
+                }
             }
-            catch
-            {
-                return View();
-            }
+            return View(appUser);
         }
 
         // GET: AppUsersController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            return View(await _databaseContext.AppUsers.FindAsync(id));
         }
 
         // POST: AppUsersController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, AppUser appUser)
         {
             try
             {
-                return RedirectToAction(nameof(IndexAsync));
+                _databaseContext.Entry(appUser).State = EntityState.Deleted;
+                await _databaseContext.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             catch
             {

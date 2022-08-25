@@ -1,4 +1,6 @@
 ﻿using AspNetCoreWebApplication.Data;
+using AspNetCoreWebApplication.Entities;
+using AspNetCoreWebApplication.Tools;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,57 +38,82 @@ namespace AspNetCoreWebApplication.Areas.Admin.Controllers
         // POST: BrandsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection) //BURADA KALDIM
+        public async Task<ActionResult> Create(Brand brand, IFormFile Logo) 
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+                try
+                {
+                    brand.Logo = await FileHelper.FileLoaderAsync(formFile: Logo);
+                    await _context.Brands.AddAsync(brand);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Hata Oluştu");
+                }
+            } 
+            return View(brand);
         }
 
         // GET: BrandsController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var marka = await _context.Brands.FindAsync(id); // Eğer gönderilen id ye ait bir marka veritabanında yoksa geriye NotFound(Bulunamadı) hatası dön.
+            if (marka == null) return NotFound();
+            return View(marka);
         }
 
         // POST: BrandsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, Brand brand, IFormFile? Logo, bool resmiSil)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    if (resmiSil == true)
+                    {
+                        FileHelper.FileRemover(brand.Logo);
+                        brand.Logo = string.Empty;
+                    }
+                    if (Logo != null) brand.Logo = await FileHelper.FileLoaderAsync(formFile: Logo);
+                    //_context.Brands.Update(brand); // 1. güncelleme yöntemi
+                    _context.Entry(brand).State = EntityState.Modified; // 2. güncelleme yöntemi
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Hata Oluştu!");
+                }
             }
-            catch
-            {
-                return View();
-            }
+            return View(brand);
         }
 
         // GET: BrandsController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            return View(await _context.Brands.FindAsync(id));
         }
 
         // POST: BrandsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, Brand brand)
         {
             try
             {
+                //_context.Brands.Remove(brand); // 1. silme yöntem
+                _context.Entry(brand).State = EntityState.Deleted; // 2. silme yöntemi
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(); //burası tamamdır/KategoriesController u oluşutur
             }
         }
     }

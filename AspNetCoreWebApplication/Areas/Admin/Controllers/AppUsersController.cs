@@ -37,7 +37,7 @@ namespace AspNetCoreWebApplication.Areas.Admin.Controllers
         // POST: AppUsersController/Create
         [HttpPost] //bu metoda istek gelir.
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync(AppUser appUser) //Parametrelerin içi dolduruluyor.
+        public async Task<ActionResult> Create(AppUser appUser) //Parametrelerin içi dolduruluyor.
         {
             if (ModelState.IsValid) //burada durum kontrol ediliyor, boş geçilen alan yoksa aşaıdaki bloklardan devam eder.
             {

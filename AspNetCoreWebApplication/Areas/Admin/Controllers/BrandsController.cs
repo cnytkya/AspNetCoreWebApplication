@@ -113,7 +113,7 @@ namespace AspNetCoreWebApplication.Areas.Admin.Controllers
             }
             catch
             {
-                return View(); //burası tamamdır/KategoriesController u oluşutur
+                return View(); 
             }
         }
     }

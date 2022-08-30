@@ -1,4 +1,4 @@
-using AspNetCoreWebApplication.Data;
+ï»¿using AspNetCoreWebApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -8,15 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Entity framework
-builder.Services.AddDbContext<DatabaseContext>(o => o.UseSqlServer()); // o => o. türündeki kod yazım tarzına "lambda expression" denir.
+builder.Services.AddDbContext<DatabaseContext>(o => o.UseSqlServer()); // o => o. tÃ¼rÃ¼ndeki kod yazÃ½m tarzÃ½na "lambda expression" denir.
 
-// Oturum açma
+// Oturum aÃ§ma
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(o =>
 {
     o.LoginPath = "/Login";
     o.Cookie.Name = "AdminLogin"; // Cookinin ismi AdminLogin olsun
 });
-// Projeye admin paneli eklemek için Projeye sağ tık açılan menüden Add > New scaffolded item diyerek açılan pencereden Area yı seçip Admin ismini verip ok diyerek alanı oluşturuyoruz.
+// Projeye admin paneli eklemek iÃ§in Projeye saÃ° tÃ½k aÃ§Ã½lan menÃ¼den Add > New scaffolded item diyerek aÃ§Ã½lan pencereden Area yÃ½ seÃ§ip Admin ismini verip ok diyerek alanÃ½ oluÃ¾turuyoruz.
 
 var app = builder.Build();
 
@@ -33,11 +33,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Oturum açmayı aktif et
+// Oturum aÃ§mayÃ½ aktif et
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute( // Bu alanı area kısmında admin area yı kullanabilmek için ekledik. Eğer başka arealar eklersek yine bu alana eklemeliyiz.
+app.MapControllerRoute( // Bu alani area kÃ½smÃ½nda admin area yÃ½ kullanabilmek iÃ§in ekledik. EÃ°er baÃ¾ka arealar eklersek yine bu alana eklemeliyiz.
             name: "admin",
             pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
           );

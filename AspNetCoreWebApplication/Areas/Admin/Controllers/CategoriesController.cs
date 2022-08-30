@@ -93,18 +93,22 @@ namespace AspNetCoreWebApplication.Areas.Admin.Controllers
         }
 
         // GET: CategoriesController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> DeleteAsync(int id)
         {
-            return View();
+            var kayit = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id); // FirstOrDefault entity framework ün kayıt bulma metotlarından biridir.
+            if (kayit == null) return NotFound();
+            return View(kayit);
         }
 
         // POST: CategoriesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> DeleteAsync(int id, Category category)
         {
             try
             {
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             catch

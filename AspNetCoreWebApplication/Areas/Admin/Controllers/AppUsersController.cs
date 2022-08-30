@@ -1,12 +1,12 @@
 ﻿using AspNetCoreWebApplication.Data;
 using AspNetCoreWebApplication.Entities;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreWebApplication.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class AppUsersController : Controller
     {
         private readonly DatabaseContext _databaseContext;
@@ -31,7 +31,7 @@ namespace AspNetCoreWebApplication.Areas.Admin.Controllers
         // GET: AppUsersController/Create
         public ActionResult Create() // Get metotları sayfa ilk açıldığında çalışan metotlardır
         {
-            return View(); // Eğer sayfa il açıldığında view a bir veri göndermemiz gerekirse bu blokta göndermeliyiz.
+            return View(); // Eğer sayfa ilk açıldığında view a bir veri göndermemiz gerekirse bu blokta göndermeliyiz.
         }
 
         // POST: AppUsersController/Create

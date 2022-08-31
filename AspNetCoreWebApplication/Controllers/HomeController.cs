@@ -1,5 +1,7 @@
-﻿using AspNetCoreWebApplication.Models;
+﻿using AspNetCoreWebApplication.Data;
+using AspNetCoreWebApplication.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace AspNetCoreWebApplication.Controllers
@@ -7,15 +9,19 @@ namespace AspNetCoreWebApplication.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly DatabaseContext _context; // Buradaki gibi birden çok DI işlemi varsa _context e sağ tıklayıp Quick actions and .. menüsüne tıklayıp açılan menüden Add parameters to.. ile başlayan menüye tıkladığımızda var olan constructor u bozmadan _context i de ekler.
+        public HomeController(ILogger<HomeController> logger, DatabaseContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            HomePageViewModel model = new HomePageViewModel();
+            model.Sliders = await _context.Sliders.ToListAsync();
+            model.Products = await _context.Products.Take(6).ToListAsync();
+            return View(model);
         }
 
         public IActionResult Privacy()

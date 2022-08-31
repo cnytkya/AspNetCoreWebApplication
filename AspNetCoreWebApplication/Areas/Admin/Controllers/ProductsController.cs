@@ -1,14 +1,14 @@
 ﻿using AspNetCoreWebApplication.Data;
 using AspNetCoreWebApplication.Entities;
 using AspNetCoreWebApplication.Tools;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreWebApplication.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class ProductsController : Controller
     {
         private readonly DatabaseContext _databaseContext;

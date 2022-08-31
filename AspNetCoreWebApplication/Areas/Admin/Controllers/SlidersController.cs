@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using AspNetCoreWebApplication.Data;
 using AspNetCoreWebApplication.Entities;
 using AspNetCoreWebApplication.Tools;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspNetCoreWebApplication.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class SlidersController : Controller
     {
         private readonly DatabaseContext _context;

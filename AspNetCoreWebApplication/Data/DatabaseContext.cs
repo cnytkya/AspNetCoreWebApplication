@@ -10,6 +10,7 @@ namespace AspNetCoreWebApplication.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Slider> Sliders { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
@@ -31,7 +32,7 @@ namespace AspNetCoreWebApplication.Data
                     IsAdmin = true,
                     UserName = "Admin",
                     Password = "123",
-                    Email = "admin@webapp.com",
+                    Email = "admin@admin.com",
                     Name = "Admin",
                     Surname = "User"
                 });

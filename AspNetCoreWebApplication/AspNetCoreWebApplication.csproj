@@ -24,4 +24,12 @@
     <Folder Include="Areas\Admin\Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Areas\Admin\Views\Contacts\Create.cshtml" />
+    <None Include="Areas\Admin\Views\Contacts\Delete.cshtml" />
+    <None Include="Areas\Admin\Views\Contacts\Details.cshtml" />
+    <None Include="Areas\Admin\Views\Contacts\Edit.cshtml" />
+    <None Include="Areas\Admin\Views\Contacts\Index.cshtml" />
+  </ItemGroup>
+
 </Project>
